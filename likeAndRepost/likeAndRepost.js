@@ -56,7 +56,15 @@ async function likeAndRepost(page, user_id) {
 
     while (!isEndOfPosts) {
       // Evaluate the posts container by traversing the nested structure
-      const posts = await getPosts(page,secondDiv,lastIndex)
+      const posts = await retry(async () => {
+        const posts = await getPosts(page,secondDiv,lastIndex)
+        if (posts?.length === undefined) {
+          console.log('posts is undefined retry...', posts)
+          throw new Error(`posts is undefined`);
+        }
+
+        return posts;
+      },5, 3000)
 
       console.log(`Found ${posts?.length} posts. last index ${lastIndex}`);
       // if (posts?.success === false) {
