@@ -20,16 +20,11 @@ pm2 set pm2-logrotate:max_size 50M
 pm2 set pm2-logrotate:retain 10
 pm2 set pm2-logrotate:compress true
 
-To start script at the first time (in a new machine), go to the adspower folder and right click -  “open git bash here”
-pm2 start main.js -n adspower --time
 
-To start the script if it has already started before and stopped
-pm2 start adspower
-
-To stop script at the end of the day
-pm2 stop adspower
-
-To watch logs
-pm2 logs
-or 
-pm2 logs --lines 1000
+| Action                                       | Command                                          |
+|----------------------------------------------|--------------------------------------------------|
+| **Start script (new machine)**               | `pm2 start main.js -n adspower --time`           |
+| **Start script (already started before)**    | `pm2 start adspower`                             |
+| **Stop script**                              | `pm2 stop adspower`                              |
+| **View logs**                                | `pm2 logs`                                       |
+| **View last 1000 lines of logs**             | `pm2 logs --lines 1000`                          |
