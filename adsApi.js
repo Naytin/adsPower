@@ -5,7 +5,7 @@ dotenv.config();
 import { errorHandler } from './errorHandler.js';
 import { delay } from './helpers.js';
 
-const local = process.env.LOCAL_API_URL;
+const local = process.env.LOCAL_API_URL || 'http://local.adspower.com:50325/';
 
 const requests = {
   profileList: 'api/v1/user/list',

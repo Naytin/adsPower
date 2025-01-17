@@ -34,6 +34,7 @@ async function likeAndRepost(page, user_id) {
 
     let isEndOfPosts = false;
     let stopReposting = false;
+    let maxScrollDown = 0
     let notFound = {
       like: [],
       repost: []
@@ -65,14 +66,21 @@ async function likeAndRepost(page, user_id) {
 
         return posts;
       },5, 3000)
-
+      //increment scrolls, to 75 cycles and stop
+      if (posts?.length === 0) {
+        maxScrollDown++;
+      } else {
+        maxScrollDown = 0;
+      }
+      
       console.log(`Found ${posts?.length} posts. last index ${lastIndex}`);
-      // if (posts?.success === false) {
-      //   isEndOfPosts = true
-      //   stopLiking = true
-      //   stopReposting = true
-      //   break;  
-      // }
+      //if there are 75 cycles that means the script tried to scroll down about 3 minutes and no posts loaded
+      if (maxScrollDown > 75) {
+        isEndOfPosts = true
+        stopLiking = true
+        stopReposting = true
+        break;  
+      }
       // Perform actions (like and repost) on each post
       await delay(delays.newPostLoaded);
       for (let post of posts) {

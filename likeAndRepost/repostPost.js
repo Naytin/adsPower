@@ -74,7 +74,6 @@ export async function repost(page, secondDiv, index) {
   let response;
   try {
     return await retry(async () => {
-      console.log({attempts})
       const status = await isReposted(page,secondDiv, index);
 
       // console.log({alreadyReposted})
