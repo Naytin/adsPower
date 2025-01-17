@@ -1,6 +1,6 @@
 import { delays, selectors } from '../constant.js';
 import {errorHandler} from '../errorHandler.js'
-import { delay } from '../helpers.js';
+import { delay, retry } from '../helpers.js';
 import {reloadAndTryToGoToFollowingPage} from '../login/threadsLogin.js'
 import {scrollIntoView} from './scrollPostIntoView.js'
 import {like} from './likePost.js'
