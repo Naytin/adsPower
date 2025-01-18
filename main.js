@@ -17,10 +17,13 @@ let intervalId
 const activeBrowserIds = new Set(); 
 const intervalMap = new Map(); // To track intervalId for each user
 
+
 async function processBrowsers() {
   try {
     // Fetch the active browsers list from AdsPower
     const browsers = await api.activeBrowsers();
+    // Clean up inactive browsers using the fetched list
+    await cleanInactiveBrowsers(browsers);
 
     if (!browsers || browsers.length === 0) {
       errorHandler('No active browsers found.');
@@ -37,6 +40,48 @@ async function processBrowsers() {
     errorHandler('Error in main function:', error);
   }
 }
+
+async function cleanInactiveBrowsers(activeBrowsers = []) {
+  try {
+    console.log('Cleaning up inactive browsers...');
+
+    // Fetch the list of active browser user IDs from AdsPower
+    const activeUserIds = new Set(activeBrowsers.map(browser => browser.user_id));
+
+    // Iterate through the current activeBrowserIds
+    for (const userId of activeBrowserIds) {
+      // If the userId is not in the active list, clean it up
+      if (!activeUserIds.has(userId)) {
+        console.log(`Cleaning up browser and interval for inactive user ID: ${userId}`);
+
+        // Clear the interval for this userId, if it exists
+        if (intervalMap.has(userId)) {
+          clearInterval(intervalMap.get(userId));
+          intervalMap.delete(userId);
+        }
+
+        // Remove the userId from the activeBrowserIds set
+        activeBrowserIds.delete(userId);
+      }
+    }
+
+    // If no active browsers are found, clean up all intervals and IDs
+    if (activeUserIds.size === 0) {
+      console.log('No active browsers found. Cleaning up all intervals and IDs...');
+      for (const userId of activeBrowserIds) {
+        if (intervalMap.has(userId)) {
+          clearInterval(intervalMap.get(userId));
+          intervalMap.delete(userId);
+        }
+      }
+      activeBrowserIds.clear();
+    }
+
+  } catch (error) {
+    errorHandler('Error while cleaning inactive browsers:', error);
+  }
+}
+
 
 function logResults(results, newBrowsers) {
   results.forEach((result, index) => {
